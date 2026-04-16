@@ -9,6 +9,7 @@ cd extractdot
 bash main.sh
 ```
 powershell下：
+
 ```powershell
 cd extractdot
 .\main.ps1

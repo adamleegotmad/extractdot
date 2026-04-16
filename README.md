@@ -2,7 +2,10 @@
 
 本工具用于从线性图像中提取指定区域内数据点的坐标，并完成坐标标定与可视化。共包含四个脚本。
 请在extractdot文件夹下运行以获得vscode的按钮运行支持！
-
+首先请获得本项目
+```git
+git clone https://github.com/adamleegotmad/extractdot.git
+```
 bash下请：
 ```bash
 cd extractdot

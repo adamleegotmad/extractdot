@@ -1,170 +1,231 @@
 # 线性图像数据提取工具
+一款用于从线性图像中提取指定区域数据点坐标，完成坐标标定与可视化的工具，包含四个核心脚本，支持 VS Code 快捷运行与多终端操作。
 
-本工具用于从线性图像中提取指定区域内数据点的坐标，并完成坐标标定与可视化。共包含四个脚本。
-请在extractdot文件夹下运行以获得vscode的按钮运行支持！
-首先请获得本项目
-```git
+## 目录
+1. [快速开始](#快速开始)
+2. [依赖环境](#依赖环境)
+3. [完整工作流程](#完整工作流程)
+4. [完整流程示例](#完整流程示例)
+5. [注意事项](#注意事项)
+6. [常见问题](#常见问题)
+7. [macOS 运行异常解决方案](#macos-运行异常解决方案)
+8. [备注](#备注)
+9. [特别鸣谢](#特别鸣谢)
+
+---
+
+## 快速开始
+### 项目获取
+```bash
 git clone https://github.com/adamleegotmad/extractdot.git
 ```
-bash下请：
+
+### 运行方式
+⚠️ **请在 `extractdot` 文件夹下运行，以支持 VS Code 按钮运行**
+
+#### Bash 环境
 ```bash
 cd extractdot
 bash main.sh
 ```
-powershell下：
 
+#### PowerShell 环境
+1. 前置配置（管理员权限）
+```powershell
+# 查看执行策略
+Get-ExecutionPolicy
+# 若为 Restricted，修改执行策略
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+2. 运行脚本
 ```powershell
 cd extractdot
 .\main.ps1
 ```
-首先：
-在执行 `.\main.ps1` 之前，通常需要确保以下几点：
 
-1. **PowerShell 执行策略**  
-   默认情况下 PowerShell 可能禁止运行脚本。先用管理员权限运行以下命令查看并调整策略：
-   ```powershell
-   Get-ExecutionPolicy
-   ```
-   如果为 `Restricted`，请改为 `RemoteSigned` 或 `Unrestricted`：
-   ```powershell
-   Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
-   ```
-2. **运行权限**  
-   某些操作（如修改注册表、系统服务）需要管理员权限。必要时以 **管理员身份** 启动 PowerShell。
-3. **环境变量或配置文件**  
-   如果脚本依赖特定环境变量或 `.env` 文件，请预先配置好。
-
-完成这些准备后，再执行 `.\main.ps1` 即可。
-```powershell
-.\main.ps1
-```
+---
 
 ## 依赖环境
+### 基础环境
+- Python 3.13 及以上版本
 
-- Python 3.7+
-- 需要安装以下第三方库：
-  - `numpy`
-  - `pandas`
-  - `matplotlib`
-  - `Pillow`（即 PIL）
-  - `opencv-python`
+### 第三方库（需手动安装）
+- `numpy`
+- `pandas`
+- `matplotlib`
+- `Pillow` (PIL)
+- `opencv-python`
 
-> 以下为 Python 标准库，无需额外安装：`sys`, `csv`, `tkinter`（含 `filedialog`, `ttk`, `messagebox`）, `pathlib`
+### 内置库（无需安装）
+`sys`、`csv`、`tkinter`（`filedialog`/`ttk`/`messagebox`）、`pathlib`
 
-### 安装命令
-
+### 依赖安装命令
 ```bash
 pip3 install numpy pandas matplotlib Pillow opencv-python
 ```
 
-## 工作流程
+---
 
-### Step 1: 转换为二值黑白图像
-
+## 完整工作流程
+### Step 1：转换为二值黑白图像
+**运行命令**
 ```bash
 python3 convert.py
 ```
-
-**功能说明**  
-将原始彩色/灰度图像转换为二值黑白图像（binary black-and-white image）。  
-该步骤会突出图像中的目标点（通常为黑底白点或白底黑点），便于后续处理。
-
-**输入**：原始图像（默认路径可自行在脚本中修改）  
-**输出**：二值化图像文件（不输出），与对应坐标文件（`data.csv`），交互中直接关闭图像即可完成。
+**功能说明**
+将原始彩色/灰度图像转换为二值黑白图像，突出目标点（黑底白点/白底黑点），为后续处理做准备。
+**输入**：原始图像（路径可在脚本内自定义）
+**输出**：坐标文件 `data.csv`（关闭图像窗口即可完成输出）
 
 ---
 
-### Step 2: 坐标标定
-
+### Step 2：坐标标定
+**运行命令**
 ```bash
 python3 regular.py
 ```
-
-**功能说明**  
-根据图像上已知的两个标注点（横纵坐标均不同）的真实物理坐标值，建立图像像素坐标与真实坐标之间的映射关系（标定）。  
-用户需交互式点击图像中的两个参考点，并输入它们对应的真实坐标值，脚本会计算出仿射变换或比例参数。
-
-**输入**：二值化图像（由 Step 1 生成）  
-**输出**：真实坐标文件（`data_true.csv`），交互中请根据图中的提示先后选择第一个点和第二个点，以及选择输出的文件。最好两者先后都选择。
+**功能说明**
+选取图像中两个横纵坐标不同的已知标注点，输入真实物理坐标，建立像素坐标与真实坐标的映射关系。
+**输入**：Step 1 生成的二值化图像
+**输出**：真实坐标文件 `data_true.csv`（按提示依次选择两个参考点，关闭窗口完成输出）
 
 ---
 
-### Step 3: 选择感兴趣区域
-
+### Step 3：选择感兴趣区域
+**运行命令**
 ```bash
 python3 choose.py
 ```
-
-**功能说明**  
-使用多边形工具在图像上手动选取需要提取数据点的区域（region of interest, ROI）。  
-脚本会打开图像界面，用户通过鼠标点击绘制多边形，闭合后即完成区域选择。
-
-**输入**：二值化图像（或原始图像叠加标定信息）  
-**输出**：保存多边形顶点坐标的文件`filtered_output.csv`。交互结束直接关闭图像即可。
+**功能说明**
+通过鼠标绘制多边形，手动选取需要提取数据的目标区域（ROI）。
+**输入**：二值化图像/叠加标定信息的原始图像
+**输出**：多边形顶点坐标文件 `filtered_output.csv`（关闭图像窗口完成输出）
 
 ---
 
-### Step 4: 提取坐标并可视化
-
+### Step 4：提取坐标并可视化
+**运行命令**
 ```bash
 python3 final.py
 ```
+**功能说明**
+在选定区域内提取所有目标点坐标，结合标定参数转换为真实坐标，完成数据保存与可视化。
+**输入**：二值化图像、标定参数文件、多边形区域文件
+**输出**：
+1. 真实坐标文件 `extract.csv`
+2. 坐标点分布图 `extract_plot.png`（关闭图像窗口完成输出）
 
-**功能说明**  
-在 Step 3 选定的多边形区域内，提取所有目标点的像素坐标，并根据 Step 2 的标定参数转换为真实坐标。  
-最终将坐标数据保存为 `extract.csv`，同时绘制出这些点的分布图并保存为图像文件。
-
-**输入**：  
-- 二值化图像  
-- 标定参数文件  
-- 多边形区域文件  
-
-**输出**：  
-- `extract.csv`：包含点真实坐标（x, y）  
-- `extract_plot.png`：提取出的坐标点分布图，交互结束可以直接关闭文件。
 ---
 
 ## 完整流程示例
-
 ```bash
-# 1. 二值化
+# 1. 图像二值化
 python3 convert.py
 
-# 2. 标定
+# 2. 坐标标定
 python3 regular.py
 
-# 3. 选择区域
+# 3. 选取目标区域
 python3 choose.py
 
-# 4. 提取坐标
+# 4. 提取数据并可视化
 python3 final.py
 ```
-
-执行完毕后，在当前目录下即可得到 `extract.csv` 和坐标点分布图。
-
-## 注意事项
-
-- Step 2 中选取的两个参考点应尽量距离较远，以提高标定精度，且不要共线。
-- Step 3 选取多边形时，建议将所需区域完全包含，避免遗漏边缘点。
-
-## 常见问题
-
-**Q：中间某一步做错了怎么办？**  
-A：目前还是重开方便一点；
-
-**Q：标定时点错位置如何重新选择？**  
-A：目前较为直接的方法是关闭图像窗口后重新运行 `regular.py`。
+执行完成后，在当前目录获取最终结果文件。
 
 ---
 
-如有其他问题，请检查脚本内部注释或联系作者。
+## 注意事项
+1. Step 2 标定时，两个参考点应保持较远间距，禁止共线，提升标定精度；
+2. Step 3 绘制多边形时，完整包裹所需区域，避免边缘数据点遗漏。
+
+---
+
+## 常见问题
+**Q：中间步骤操作错误怎么办？**
+A：关闭窗口重新运行对应脚本即可。
+
+**Q：标定时点错位置如何重新选择？**
+A：再点击一次需要标定的第一个或者第二个点的按钮，然后可以覆盖上次的选项，再次选择图像上的点。
+
+---
+
+## macOS 运行异常解决方案
+### 一、安装 Homebrew 版 Python
+```bash
+brew install python
+```
+
+### 二、配置 Python 环境变量
+1. 确认 Shell 类型
+```bash
+echo $SHELL
+```
+- 输出 `/bin/zsh` → 编辑 `~/.zshrc`
+- 输出 `/bin/bash` → 编辑 `~/.bash_profile`/`~/.bashrc`
+
+2. 添加路径
+- Apple Silicon (M1/M2/M3)
+```bash
+echo 'export PATH="/opt/homebrew/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+```
+- Intel 芯片
+```bash
+echo 'export PATH="/usr/local/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+```
+
+3. 验证配置
+```bash
+which python3
+python3 --version
+```
+
+4. 快捷命令别名（可选）
+```bash
+echo 'alias python=python3' >> ~/.zshrc
+echo 'alias pip=pip3' >> ~/.zshrc
+source ~/.zshrc
+```
+
+5. VS Code 解释器配置
+`Cmd+Shift+P` → 输入 `Python: Select Interpreter` → 选择 Homebrew 安装的 Python
+
+### 三、解决 `_tkinter` 缺失报错
+```bash
+brew install python-tk
+```
+
+### 四、解决 `externally-managed-environment` 报错
+安装库时添加参数：
+```bash
+pip3 install 包名 --break-system-packages
+```
+
+### 五、快速一键配置
+```bash
+# 安装 Python
+brew install python
+# 配置路径（M1/M2/M3 zsh）
+echo 'export PATH="/opt/homebrew/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+# 安装 tkinter
+brew install python-tk
+# 安装依赖库
+pip3 install numpy --break-system-packages
+pip3 install matplotlib --break-system-packages
+```
+
+---
 
 ## 备注
-可能会有2.0版本。具体方向是优化代码交互逻辑，以及添加非线性坐标系的读取等。
+工具后续计划推出 2.0 版本，优化交互逻辑，新增非线性坐标系读取功能。
+
+---
 
 ## 特别鸣谢
-
-提出灵感的hay
+灵感来源：hay
 
 *留言：扒古早文献光谱图太麻烦了（，需要vibe coding帮助扒细密数据点（是吗）感谢lhd，实在是太伟大了，深谙ai使用（是的）
 没人觉得夸别人会用ai真的是一种很高级的夸赞吗？

@@ -120,7 +120,7 @@ python3 final.py
 - 多边形区域文件  
 
 **输出**：  
-- `extract.csv`：包含点编号、像素坐标、真实坐标（x, y）  
+- `extract.csv`：包含点真实坐标（x, y）  
 - `extract_plot.png`：提取出的坐标点分布图，交互结束可以直接关闭文件。
 ---
 

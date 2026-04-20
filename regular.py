@@ -60,7 +60,7 @@ class NormalizationApp:
         self.ax.set_xlabel("X raw")
         self.ax.set_ylabel("Y raw")
         self.ax.set_title("Raw Data (click to select reference points)")
-        self.ax.grid(True, linestyle='--', alpha=0.6)
+        self.ax.grid(True, linestyle='--', alpha=0.1)
         
         self.canvas = FigureCanvasTkAgg(self.fig, master=left_frame)
         self.canvas.draw()
@@ -170,11 +170,11 @@ class NormalizationApp:
     def plot_raw_data(self):
         """绘制原始散点图"""
         self.ax.clear()
-        self.ax.scatter(self.x_raw, self.y_raw, s=20, c='blue', alpha=0.6, label='Raw data')
+        self.ax.scatter(self.x_raw, self.y_raw, s=20, c='blue', alpha=0.1, label='Raw data')
         self.ax.set_xlabel("X raw")
         self.ax.set_ylabel("Y raw")
         self.ax.set_title("Raw Data (click to select reference points)")
-        self.ax.grid(True, linestyle='--', alpha=0.6)
+        self.ax.grid(True, linestyle='--', alpha=0.1)
         
         # 若已选点，则高亮显示
         for i, pt in enumerate(self.points_selected):
@@ -294,7 +294,7 @@ class NormalizationApp:
         # 绘制归一化后的数据
         self.fig.clear()
         self.ax = self.fig.add_subplot(111)
-        self.ax.scatter(self.x_true, self.y_true, s=20, c='green', alpha=0.6, label='Normalized data')
+        self.ax.scatter(self.x_true, self.y_true, s=20, c='green', alpha=0.1, label='Normalized data')
         
         # 也标记出两个参考点变换后的位置（应该与输入的真实坐标一致）
         self.ax.scatter([x1_true, x2_true], [y1_true, y2_true], s=100, c='red', marker='X',
@@ -303,7 +303,7 @@ class NormalizationApp:
         self.ax.set_xlabel("X true")
         self.ax.set_ylabel("Y true")
         self.ax.set_title("Normalized Data (linear mapping)")
-        self.ax.grid(True, linestyle='--', alpha=0.6)
+        self.ax.grid(True, linestyle='--', alpha=0.1)
         self.ax.legend()
         
         # 重新绑定点击事件（画布重建后需要重新连接）

@@ -66,7 +66,7 @@ def plot_black_points(coords, width, height):
     y_vals = [p[1] for p in coords]
 
     fig, ax = plt.subplots(figsize=(8, 6))
-    ax.scatter(x_vals, y_vals, s=1, c='black', marker='.', alpha=0.6)
+    ax.scatter(x_vals, y_vals, s=1, c='black', marker='.', alpha=0.1)
     ax.set_title("Black Pixel Distribution (origin at bottom-left)")
     ax.set_xlabel("X coordinate (column)")
     ax.set_ylabel("Y coordinate (row, from bottom)")
@@ -74,7 +74,7 @@ def plot_black_points(coords, width, height):
     ax.set_xlim(0, width - 1)
     ax.set_ylim(0, height - 1)
     ax.set_aspect('equal', adjustable='box')
-    ax.grid(True, linestyle='--', alpha=0.5)
+    ax.grid(True, linestyle='--', alpha=0.1)
 
     # 添加 "Continue" 按钮
     ax_button = plt.axes([0.8, 0.01, 0.15, 0.05])  # [left, bottom, width, height]

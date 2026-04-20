@@ -69,7 +69,7 @@ def main():
 
         # 在图上高亮选中的点
         ax.scatter(inside_points[:, 0], inside_points[:, 1],
-                   s=20, c='red', alpha=0.8, label='Selected points')
+                   s=20, c='red', alpha=0.1, label='Selected points')
         # 绘制多边形边界
         poly = plt.Polygon(verts, closed=True, fill=None, edgecolor='red', linewidth=2)
         ax.add_patch(poly)
